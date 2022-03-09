@@ -101,23 +101,32 @@ SELECT SUM(b.sb) * 100.0 / NULLIF(SUM(b.sb + b.cs),0) AS percent_success,
  GROUP BY p.namefirst, p.namelast, sb, cs
  ORDER BY percent_success DESC;
  
- Answer: Chris Owings*/
+ Answer: Chris Owings
  
 7. From 1970 – 2016, what is the largest number of wins for a team that did not win the world series? 
 What is the smallest number of wins for a team that did win the world series? 
 Doing this will probably result in an unusually small number of wins for a world series champion – 
 determine why this is the case. Then redo your query, excluding the problem year.
 How often from 1970 – 2016 was it the case that a team with the most wins also won the world series?
-What percentage of the time?
+What percentage of the time?*/
 
-SELECT yearid, name, /*MIN*/MAX(w)
+SELECT yearid, name, MAX(w)
 FROM teams AS t
-WHERE yearid >= 1970
- AND yearid <> 1981
- AND wswin = 'N' /*'Y'*/
- GROUP BY yearid, name
- ORDER BY /*MIN*/MAX(w) DESC;
- 
+WHERE wswin = 'N' AND yearid >= '1970'
+GROUP BY yearid, name
+ORDER BY MAX(w) DESC;
  116-Seattle Mariners
+SELECT yearid, name, MIN(w)
+FROM teams AS t
+WHERE wswin = 'Y'
+GROUP BY yearid, name
+ORDER BY MIN(w) ASC;
+1981 is the problem yr
+SELECT yearid, name, MIN(w)
+	SUM(yearid <> '1981') OVER( PARTITION BY (w)) AS highest_wins,
+FROM teams AS t
+WHERE wswin = 'Y'  
+GROUP BY yearid, name
+ORDER BY MIN(w) ASC;
 
  
